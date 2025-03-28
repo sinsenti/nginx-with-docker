@@ -14,7 +14,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 # Initialize database
 db.init_app(app)
 
-# Create tables
+# Create tables (only needed once to create tables)
 with app.app_context():
     db.create_all()
 
@@ -38,11 +38,13 @@ def login():
     if not username or not password:
         return jsonify({"error": "Missing username or password"}), 400
 
-    new_user = User(username=username, password=password)
-    db.session.add(new_user)
-    db.session.commit()
+    # Check if user exists in the database
+    user = User.query.filter_by(username=username).first()
 
-    return jsonify({"message": "User data stored successfully!"}), 201
+    if user and bcrypt.checkpw(password.encode("utf-8"), user.password.encode("utf-8")):
+        return jsonify({"message": "Login successful!"}), 200
+    else:
+        return jsonify({"error": "Invalid username or password"}), 401
 
 
 if __name__ == "__main__":

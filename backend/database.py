@@ -10,6 +10,9 @@ class User(db.Model):
 
     def __init__(self, username, password):
         self.username = username
-        self.password = (
-            password  # Storing plain text for simplicity (use hashing in production)
-        )
+        # Hash the password before storing it
+        import bcrypt
+
+        self.password = bcrypt.hashpw(
+            password.encode("utf-8"), bcrypt.gensalt()
+        ).decode("utf-8")
