@@ -4,7 +4,6 @@ from flask import request, jsonify
 
 app = create_app()
 
-
 @app.route("/api/login", methods=["POST"])
 def login():
     data = request.json
@@ -23,8 +22,7 @@ def login():
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({"message": "User registered successfully"}), 201
-
+    return jsonify({"message": "User registered successfully"}), 201)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
